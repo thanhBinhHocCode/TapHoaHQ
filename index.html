@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tạp Hóa Hường Quyền</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Segoe UI;
+        background: #f2f6f9;
+      }
+      header {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 25px;
+        text-align: center;
+      }
+      nav {
+        background: white;
+        text-align: center;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      nav a {
+        margin: 6px;
+        padding: 10px 18px;
+        border-radius: 25px;
+        background: #27ae60;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      nav a:hover {
+        background: #1e8449;
+      }
+
+      section {
+        background: white;
+        margin: 20px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+      }
+      .product {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+      }
+      .product img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .price {
+        color: #27ae60;
+        font-weight: bold;
+      }
+
+      .btn {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 8px 15px;
+        background: #27ae60;
+        color: white;
+        border-radius: 20px;
+        text-decoration: none;
+      }
+
+      footer {
+        background: #27ae60;
+        color: white;
+        text-align: center;
+        padding: 10px;
+      }
+
+      /* nút nổi */
+      .float-btn {
+        position: fixed;
+        right: 15px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 26px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+      }
+      .zalo {
+        bottom: 90px;
+        background: #0180ff;
+      }
+      .fb {
+        bottom: 20px;
+        background: #1877f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1><i class="fa-solid fa-store"></i> Tạp Hóa Hường Quyền</h1>
+      <p>Uy tín – Chất lượng – Giá tốt</p>
+    </header>
+
+    <nav>
+      <a href="#gioithieu">Giới thiệu</a>
+      <a href="#sanpham">Sản phẩm</a>
+      <a href="#lienhe">Liên hệ</a>
+    </nav>
+
+    <section id="gioithieu">
+      <h2>Giới thiệu</h2>
+      <p>
+        Quán tạp hóa Hường Quyền chuyên cung cấp thực phẩm, đồ gia dụng, bánh
+        kẹo, nước giải khát...
+      </p>
+    </section>
+
+    <section id="sanpham">
+      <h2>🛒 Sản phẩm</h2>
+
+      <div class="products">
+        <div class="product">
+          <img src="images/taoWeb1.jpg" />
+          <h4>Mì gói</h4>
+          <p class="price">3.500đ</p>
+          <a class="btn">Mua</a>
+        </div>
+
+        <div class="product">
+          <img src="images/Web2.jpg" />
+          <h4>Nước ngọt</h4>
+          <p class="price">10.000đ</p>
+          <a class="btn">Mua</a>
+        </div>
+
+        <div class="product">
+          <img src="images/Web3.jpg" />
+          <h4>Bánh kẹo</h4>
+          <p class="price">15.000đ</p>
+          <a class="btn">Mua</a>
+        </div>
+
+        <div class="product">
+          <img src="images/Web4.jpg" />
+          <h4>Dầu ăn</h4>
+          <p class="price">45.000đ</p>
+          <a class="btn">Mua</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="lienhe">
+      <h2>📞 Liên hệ</h2>
+      <p>📍 Thôn Tân Đức, xã Nam Ba Đồn, tỉnh Quảng Trị</p>
+      <p>📞 0976 602 683</p>
+      <p>📧 taphoahq@gmail.com</p>
+    </section>
+
+    <footer>© 2026 Tạp Hóa Hường Quyền</footer>
+
+    <a class="float-btn zalo" href="https://zalo.me/0976602683" target="_blank">
+      <i class="fa-solid fa-comment"></i>
+    </a>
+
+    <a class="float-btn fb" href="https://facebook.com" target="_blank">
+      <i class="fa-brands fa-facebook-f"></i>
+    </a>
+  </body>
+</html>

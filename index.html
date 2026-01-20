@@ -3,91 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống POS Bán Hàng</title>
+    <title>Hệ thống POS Bán Hàng - Ảnh Lớn</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-        .cart-item-list { max-height: 400px; overflow-y: auto; }
+        /* Tăng kích thước tối thiểu của mỗi ô sản phẩm để ảnh hiển thị lớn hơn */
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        .cart-item-list { max-height: 450px; overflow-y: auto; }
+        
+        /* Đảm bảo ảnh luôn vuông và lấp đầy khung */
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
-        <div class="w-7/12 p-4 flex flex-col border-r bg-white">
-            <div class="mb-4 flex gap-2">
-                <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm..." class="w-full p-2 border rounded shadow-sm">
+        <div class="w-7/12 p-6 flex flex-col border-r bg-white overflow-y-auto">
+            <div class="mb-6">
+                <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm nhanh..." class="w-full p-3 border-2 border-blue-100 rounded-xl shadow-sm focus:border-blue-500 outline-none transition-all">
             </div>
             
-            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 border-b">
-                <button onclick="filterCategory('All')" class="px-4 py-2 bg-blue-500 text-white rounded">Tất cả</button>
-                <button onclick="filterCategory('Bánh kẹo')" class="px-4 py-2 bg-gray-200 rounded">Bánh kẹo</button>
-                <button onclick="filterCategory('Gia vị')" class="px-4 py-2 bg-gray-200 rounded">Gia vị</button>
-                <button onclick="filterCategory('Nước giải khát')" class="px-4 py-2 bg-gray-200 rounded">Nước giải khát</button>
-                <button onclick="filterCategory('Mì tôm')" class="px-4 py-2 bg-gray-200 rounded">Mì tôm</button>
+            <div class="flex gap-3 mb-6 overflow-x-auto pb-2 items-center">
+                <span class="font-bold text-gray-500 whitespace-nowrap">Lọc theo:</span>
+                <button onclick="filterCategory('All')" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-md transition">Tất cả</button>
+                <button onclick="filterCategory('Bánh kẹo')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Bánh kẹo</button>
+                <button onclick="filterCategory('Gia vị')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Gia vị</button>
+                <button onclick="filterCategory('Nước giải khát')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Nước giải khát</button>
+                <button onclick="filterCategory('Mì tôm')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Mì tôm</button>
             </div>
 
             <div id="productGrid" class="product-grid">
                 </div>
         </div>
 
-        <div class="w-5/12 p-4 bg-gray-50 flex flex-col justify-between">
+        <div class="w-5/12 p-6 bg-gray-50 flex flex-col justify-between shadow-2xl">
             <div>
-                <h2 class="text-xl font-bold mb-4 border-b pb-2">Hóa Đơn</h2>
-                <input type="text" id="customerName" placeholder="Tên khách hàng" class="w-full mb-3 p-2 border rounded">
+                <h2 class="text-2xl font-black mb-6 text-gray-800 border-b-4 border-blue-500 pb-2">HÓA ĐƠN TẠM TÍNH</h2>
+                <div class="flex gap-2 mb-4">
+                    <div class="bg-blue-100 p-2 rounded-lg text-blue-600">👤</div>
+                    <input type="text" id="customerName" placeholder="Tên khách hàng (không bắt buộc)" class="w-full p-2 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                </div>
                 
-                <div id="cartItems" class="cart-item-list space-y-2">
-                    </div>
+                <div id="cartItems" class="cart-item-list space-y-3">
+                    <p class="text-center text-gray-400 mt-10 italic">Chưa có sản phẩm nào được chọn</p>
+                </div>
             </div>
 
-            <div class="border-t pt-4">
-                <div class="flex justify-between text-lg font-bold">
-                    <span>Tổng cộng:</span>
+            <div class="border-t-2 border-dashed pt-6 mt-4">
+                <div class="flex justify-between text-2xl font-black text-blue-700">
+                    <span>TỔNG TIỀN:</span>
                     <span id="totalAmount">0đ</span>
                 </div>
                 
-                <div class="mt-4">
-                    <p class="text-sm mb-1">Tiền khách đưa:</p>
-                    <div class="grid grid-cols-4 gap-2 mb-2">
-                        <button onclick="setCash(50000)" class="bg-white border p-1 rounded">50k</button>
-                        <button onclick="setCash(100000)" class="bg-white border p-1 rounded">100k</button>
-                        <button onclick="setCash(200000)" class="bg-white border p-1 rounded">200k</button>
-                        <button onclick="setCash(500000)" class="bg-white border p-1 rounded">500k</button>
+                <div class="mt-6 p-4 bg-white rounded-xl shadow-inner">
+                    <p class="text-sm font-bold text-gray-500 mb-2 uppercase">Tiền khách đưa:</p>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <button onclick="setCash(50000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">50k</button>
+                        <button onclick="setCash(100000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">100k</button>
+                        <button onclick="setCash(200000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">200k</button>
+                        <button onclick="setCash(500000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">500k</button>
                     </div>
-                    <input type="number" id="cashReceived" class="w-full p-2 border rounded text-right text-xl" placeholder="Nhập số tiền...">
+                    <input type="number" id="cashReceived" class="w-full p-3 border-2 border-gray-200 rounded-lg text-right text-2xl font-mono text-green-600 focus:border-green-500 outline-none" placeholder="0">
                 </div>
 
-                <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-lg mt-4 font-bold text-lg hover:bg-green-700">
-                    THANH TOÁN (IN HÓA ĐƠN)
+                <button onclick="checkout()" class="w-full bg-blue-600 text-white py-4 rounded-2xl mt-6 font-black text-xl hover:bg-blue-700 transform active:scale-95 transition shadow-lg">
+                    XUẤT HÓA ĐƠN
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="p-4 bg-white mt-4 border-t">
-        <h3 class="font-bold">Lịch sử giao dịch gần đây</h3>
-        <div id="historyLog" class="text-sm text-gray-600 mt-2"></div>
+    <div class="fixed bottom-0 left-0 w-7/12 p-4 bg-black bg-opacity-80 text-white hidden" id="historyPanel">
+         <div class="flex justify-between items-center mb-2">
+             <h3 class="font-bold uppercase text-yellow-400 text-sm">Giao dịch vừa thực hiện</h3>
+             <button onclick="document.getElementById('historyPanel').classList.add('hidden')" class="text-xs bg-gray-600 px-2 rounded">Đóng</button>
+         </div>
+         <div id="historyLog" class="text-xs"></div>
     </div>
 
     <script>
-        // Data giả lập
+        // Cập nhật dữ liệu sản phẩm với link ảnh chất lượng hơn
         const products = [
-            { id: 1, name: 'Oishi Cay', price: 10000, category: 'Bánh kẹo', img: 'https://via.placeholder.com/80' },
-            { id: 2, name: 'Coca Cola', price: 12000, category: 'Nước giải khát', img: 'https://via.placeholder.com/80' },
-            { id: 3, name: 'Hảo Hảo', price: 5000, category: 'Mì tôm', img: 'https://via.placeholder.com/80' },
-            { id: 4, name: 'Nước mắm Nam Ngư', price: 35000, category: 'Gia vị', img: 'https://via.placeholder.com/80' },
+            { id: 1, name: 'Bánh Quy Oreo Socola', price: 15000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=400&auto=format&fit=crop' },
+            { id: 2, name: 'Coca Cola Lon 330ml', price: 12000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400&auto=format&fit=crop' },
+            { id: 3, name: 'Mì Hảo Hảo Tôm Chua Cay', price: 5000, category: 'Mì tôm', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=400&auto=format&fit=crop' },
+            { id: 4, name: 'Nước mắm Nam Ngư 750ml', price: 42000, category: 'Gia vị', img: 'https://images.unsplash.com/photo-1589113103503-49654d88b75f?q=80&w=400&auto=format&fit=crop' },
+            { id: 5, name: 'Kẹo dẻo Haribo', price: 25000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1582050048266-3d70f0f5b12f?q=80&w=400&auto=format&fit=crop' },
+            { id: 6, name: 'Pepsi Không Calo', price: 11000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1543253687-c931c8e01820?q=80&w=400&auto=format&fit=crop' }
         ];
 
         let cart = [];
 
-        // Hiển thị sản phẩm
         function renderProducts(filter = 'All') {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            products.filter(p => filter === 'All' || p.category === filter).forEach(p => {
+            const filtered = products.filter(p => filter === 'All' || p.category === filter);
+            
+            filtered.forEach(p => {
                 grid.innerHTML += `
-                    <div onclick="addToCart(${p.id})" class="bg-white border p-2 rounded shadow hover:border-blue-500 cursor-pointer text-center">
-                        <img src="${p.img}" class="mx-auto mb-2">
-                        <p class="font-bold text-sm">${p.name}</p>
-                        <p class="text-red-500 font-semibold">${p.price.toLocaleString()}đ</p>
+                    <div onclick="addToCart(${p.id})" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl cursor-pointer transition-all border-2 border-transparent hover:border-blue-400 group">
+                        <img src="${p.img}" class="product-image group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-4 text-center">
+                            <p class="font-bold text-gray-700 text-lg mb-1 line-clamp-1">${p.name}</p>
+                            <p class="text-blue-600 font-black text-xl">${p.price.toLocaleString()}đ</p>
+                            <p class="text-xs text-gray-400 mt-1 uppercase">${p.category}</p>
+                        </div>
                     </div>
                 `;
             });
@@ -112,21 +139,26 @@
         function renderCart() {
             const container = document.getElementById('cartItems');
             const totalEl = document.getElementById('totalAmount');
+            if(cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 mt-10 italic">Chưa có sản phẩm nào</p>';
+                totalEl.innerText = '0đ';
+                return;
+            }
+            
             container.innerHTML = '';
             let total = 0;
-
             cart.forEach(item => {
                 total += item.price * item.qty;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                        <div class="w-1/2">
-                            <p class="font-semibold text-sm">${item.name}</p>
-                            <p class="text-xs text-gray-500">${item.price.toLocaleString()}đ</p>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm border-l-4 border-blue-500">
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-800">${item.name}</p>
+                            <p class="text-sm text-blue-500">${item.price.toLocaleString()}đ x ${item.qty}</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="updateQty(${item.id}, -1)" class="px-2 bg-gray-200 rounded">-</button>
-                            <span class="w-6 text-center">${item.qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="px-2 bg-gray-200 rounded">+</button>
+                        <div class="flex items-center gap-3 bg-gray-100 p-1 rounded-lg">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 flex items-center justify-center bg-white rounded shadow hover:bg-red-50 text-red-500 font-bold">-</button>
+                            <span class="w-6 text-center font-bold">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 flex items-center justify-center bg-white rounded shadow hover:bg-green-50 text-green-500 font-bold">+</button>
                         </div>
                     </div>
                 `;
@@ -134,29 +166,55 @@
             totalEl.innerText = total.toLocaleString() + 'đ';
         }
 
+        function filterCategory(cat) {
+            renderProducts(cat);
+        }
+
         function setCash(amount) {
             document.getElementById('cashReceived').value = amount;
         }
 
         function checkout() {
-            if(cart.length === 0) return alert("Giỏ hàng trống!");
+            if(cart.length === 0) return alert("Vui lòng chọn sản phẩm!");
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const cash = document.getElementById('cashReceived').value;
+            const cash = parseInt(document.getElementById('cashReceived').value) || 0;
             const customer = document.getElementById('customerName').value || "Khách lẻ";
             const now = new Date().toLocaleString('vi-VN');
 
-            if(cash < total) return alert("Tiền khách đưa không đủ!");
+            if(cash < total) return alert("Tiền khách đưa còn thiếu " + (total - cash).toLocaleString() + "đ");
 
-            const log = `[${now}] ${customer} - Tổng: ${total.toLocaleString()}đ (Thối: ${(cash - total).toLocaleString()}đ)`;
+            // Hiển thị lịch sử
+            document.getElementById('historyPanel').classList.remove('hidden');
+            const log = `● ${now} | ${customer} | Tổng: ${total.toLocaleString()}đ (Thối: ${(cash - total).toLocaleString()}đ)`;
             const history = document.getElementById('historyLog');
-            history.innerHTML = `<p>${log}</p>` + history.innerHTML;
+            history.innerHTML = `<div>${log}</div>` + history.innerHTML;
 
-            alert("Thanh toán thành công!\nTiền thối: " + (cash - total).toLocaleString() + "đ");
+            alert("THANH TOÁN THÀNH CÔNG!\n------------------------\nKhách: " + customer + "\nTổng: " + total.toLocaleString() + "đ\nTiền thối: " + (cash - total).toLocaleString() + "đ");
+            
+            // Reset
             cart = [];
             document.getElementById('cashReceived').value = '';
             document.getElementById('customerName').value = '';
             renderCart();
         }
+
+        // Lắng nghe ô tìm kiếm
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase();
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.filter(p => p.name.toLowerCase().includes(val)).forEach(p => {
+                grid.innerHTML += `
+                    <div onclick="addToCart(${p.id})" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl cursor-pointer transition-all border-2 border-transparent hover:border-blue-400 group">
+                        <img src="${p.img}" class="product-image group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-4 text-center">
+                            <p class="font-bold text-gray-700 text-lg mb-1 line-clamp-1">${p.name}</p>
+                            <p class="text-blue-600 font-black text-xl">${p.price.toLocaleString()}đ</p>
+                        </div>
+                    </div>
+                `;
+            });
+        });
 
         renderProducts();
     </script>

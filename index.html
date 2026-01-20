@@ -1,207 +1,135 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS Bán Hàng Nhanh</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Tùy chỉnh thanh cuộn cho đẹp */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
-        .product-card:active { transform: scale(0.95); transition: 0.1s; }
-    </style>
+  <meta charset="UTF-8">
+  <title>POS Tạp Hóa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .menu, .bill {
+      padding: 20px;
+      width: 50%;
+    }
+    .menu {
+      background-color: #fff;
+      border-right: 1px solid #ccc;
+    }
+    .bill {
+      background-color: #fafafa;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .bill-summary {
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 h-screen flex overflow-hidden font-sans">
+<body>
 
-    <div class="w-[65%] flex flex-col h-full border-r border-gray-300 bg-white">
-        <div class="p-4 border-b border-gray-200 bg-white shadow-sm z-10">
-            <input type="text" id="searchInput" placeholder="🔍 Tìm tên món hoặc giá tiền..." 
-                   class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            
-            <div class="flex gap-2 mt-3 overflow-x-auto">
-                <button onclick="filterCategory('all')" class="px-4 py-1 bg-gray-800 text-white rounded-full text-sm hover:bg-gray-700">Tất cả</button>
-                <button onclick="filterCategory('food')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-full text-sm hover:bg-gray-300">Đồ ăn</button>
-                <button onclick="filterCategory('drink')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-full text-sm hover:bg-gray-300">Đồ uống</button>
-            </div>
-        </div>
+  <div class="menu">
+    <h2>Danh mục sản phẩm</h2>
+    <div id="product-list"></div>
+  </div>
 
-        <div id="productList" class="flex-1 overflow-y-auto p-4 grid grid-cols-3 gap-4 content-start bg-gray-50">
-            </div>
+  <div class="bill">
+    <h2>Hóa đơn</h2>
+    <ul id="bill-items"></ul>
+    <div class="bill-summary">
+      <p><strong>Tổng tiền hàng:</strong> <span id="total">0 ₫</span></p>
+      <p><strong>Khách đưa:</strong> <input type="number" id="paid" value="0" /> ₫</p>
+      <p><strong>Tiền thừa:</strong> <span id="change">0 ₫</span></p>
+      <button onclick="resetBill()">THANH TOÁN (F1)</button>
     </div>
+  </div>
 
-    <div class="w-[35%] flex flex-col h-full bg-white shadow-2xl z-20">
-        <div class="p-4 bg-blue-600 text-white flex justify-between items-center shadow">
-            <h2 class="text-xl font-bold">Hóa Đơn Mới</h2>
-            <button onclick="clearCart()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Xóa tất cả</button>
-        </div>
+  <script>
+    const products = [
+      { name: "Cafe Đen Đá", price: 25000 },
+      { name: "Cafe Sữa Đá", price: 29000 },
+      { name: "Bạc Xỉu", price: 35000 },
+      { name: "Trà Đào Cam Sả", price: 45000 },
+      { name: "Gà Rán (1 miếng)", price: 35000 },
+      { name: "Khoai Tây Chiên", price: 25000 },
+      { name: "Hamburger Bò", price: 55000 },
+      { name: "Mì Ý Sốt Bò", price: 45000 },
+      { name: "Nước Suối", price: 10000 }
+    ];
 
-        <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3">
-            </div>
+    const bill = [];
 
-        <div class="p-4 bg-gray-50 border-t border-gray-300 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-            <div class="flex justify-between mb-2 text-gray-600 text-lg">
-                <span>Tổng tiền hàng:</span>
-                <span id="totalAmount" class="font-bold text-gray-900">0</span>
-            </div>
-            
-            <div class="flex items-center justify-between mb-4">
-                <span class="text-gray-600">Khách đưa:</span>
-                <input type="number" id="customerPay" oninput="calculateChange()" 
-                       class="w-40 p-2 text-right text-xl font-bold border border-blue-300 rounded focus:ring-2 focus:ring-blue-500 text-blue-700" placeholder="0">
-            </div>
-            
-            <div class="flex justify-end gap-2 mb-4">
-                <button onclick="setCash(50000)" class="text-xs bg-gray-200 px-2 py-1 rounded border border-gray-400">50k</button>
-                <button onclick="setCash(100000)" class="text-xs bg-gray-200 px-2 py-1 rounded border border-gray-400">100k</button>
-                <button onclick="setCash(500000)" class="text-xs bg-gray-200 px-2 py-1 rounded border border-gray-400">500k</button>
-            </div>
+    function renderProducts() {
+      const list = document.getElementById("product-list");
+      products.forEach((product, index) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <span>${product.name} - ${product.price.toLocaleString()} ₫</span>
+          <button onclick="addToBill(${index})">Thêm</button>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-            <div class="flex justify-between items-center pt-3 border-t border-gray-300 mb-4">
-                <span class="font-bold text-gray-800">TIỀN THỪA:</span>
-                <span id="changeAmount" class="text-2xl font-extrabold text-green-600">0</span>
-            </div>
+    function addToBill(index) {
+      const product = products[index];
+      const existing = bill.find(item => item.name === product.name);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        bill.push({ ...product, quantity: 1 });
+      }
+      renderBill();
+    }
 
-            <button onclick="alert('Đã in hóa đơn & Lưu đơn hàng!')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-4 rounded-lg shadow-lg uppercase transition">
-                THANH TOÁN (F1)
-            </button>
-        </div>
-    </div>
+    function renderBill() {
+      const list = document.getElementById("bill-items");
+      list.innerHTML = "";
+      let total = 0;
+      bill.forEach(item => {
+        const li = document.createElement("li");
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        li.textContent = `${item.name}: ${item.quantity} x ${item.price.toLocaleString()} ₫ = ${itemTotal.toLocaleString()} ₫`;
+        list.appendChild(li);
+      });
+      document.getElementById("total").textContent = `${total.toLocaleString()} ₫`;
 
-    <script>
-        // 1. DỮ LIỆU SẢN PHẨM (Bạn có thể thêm sửa thoải mái ở đây)
-        const products = [
-            { id: 1, name: "Cafe Đen Đá", price: 25000, cat: "drink", img: "☕" },
-            { id: 2, name: "Cafe Sữa Đá", price: 29000, cat: "drink", img: "🥤" },
-            { id: 3, name: "Bạc Xỉu", price: 35000, cat: "drink", img: "🥛" },
-            { id: 4, name: "Trà Đào Cam Sả", price: 45000, cat: "drink", img: "🍹" },
-            { id: 5, name: "Gà Rán (1 miếng)", price: 35000, cat: "food", img: "🍗" },
-            { id: 6, name: "Khoai Tây Chiên", price: 25000, cat: "food", img: "🍟" },
-            { id: 7, name: "Hamburger Bò", price: 55000, cat: "food", img: "🍔" },
-            { id: 8, name: "Mì Ý Sốt Bò", price: 45000, cat: "food", img: "🍝" },
-            { id: 9, name: "Nước Suối", price: 10000, cat: "drink", img: "💧" },
-        ];
+      const paid = parseInt(document.getElementById("paid").value) || 0;
+      const change = paid - total;
+      document.getElementById("change").textContent = `${change > 0 ? change.toLocaleString() : 0} ₫`;
+    }
 
-        let cart = []; // Giỏ hàng trống ban đầu
+    function resetBill() {
+      alert("Thanh toán thành công!");
+      bill.length = 0;
+      document.getElementById("paid").value = 0;
+      renderBill();
+    }
 
-        // 2. HÀM HIỂN THỊ DANH SÁCH SẢN PHẨM
-        function renderProducts(filter = 'all') {
-            const list = document.getElementById('productList');
-            list.innerHTML = '';
-            
-            const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
+    document.getElementById("paid").addEventListener("input", renderBill);
+    renderProducts();
+  </script>
 
-            filtered.forEach(p => {
-                const item = document.createElement('div');
-                item.className = "product-card bg-white p-4 rounded-xl shadow cursor-pointer border hover:border-blue-500 hover:shadow-lg flex flex-col items-center justify-center h-40";
-                item.onclick = () => addToCart(p.id);
-                item.innerHTML = `
-                    <div class="text-5xl mb-2">${p.img}</div>
-                    <h3 class="font-bold text-gray-700 text-center text-sm mb-1">${p.name}</h3>
-                    <p class="text-orange-600 font-bold">${p.price.toLocaleString()} đ</p>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        // 3. LOGIC GIỎ HÀNG
-        function addToCart(id) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty++;
-            } else {
-                const product = products.find(p => p.id === id);
-                cart.push({ ...product, qty: 1 });
-            }
-            renderCart();
-        }
-
-        function updateQty(id, change) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += change;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id); // Xóa nếu số lượng = 0
-                }
-            }
-            renderCart();
-        }
-
-        function clearCart() {
-            if(confirm('Bạn chắc chắn muốn xóa đơn này?')) {
-                cart = [];
-                renderCart();
-                document.getElementById('customerPay').value = '';
-                calculateChange();
-            }
-        }
-
-        function renderCart() {
-            const cartList = document.getElementById('cartItems');
-            cartList.innerHTML = '';
-            let total = 0;
-
-            cart.forEach(item => {
-                const lineTotal = item.price * item.qty;
-                total += lineTotal;
-                
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200";
-                div.innerHTML = `
-                    <div class="flex-1">
-                        <div class="font-bold text-sm text-gray-800">${item.name}</div>
-                        <div class="text-xs text-gray-500">${item.price.toLocaleString()} x ${item.qty}</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded font-bold text-gray-700">-</button>
-                        <span class="font-bold w-6 text-center">${item.qty}</span>
-                        <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded font-bold text-blue-700">+</button>
-                    </div>
-                    <div class="w-20 text-right font-bold text-gray-800 text-sm">
-                        ${lineTotal.toLocaleString()}
-                    </div>
-                `;
-                cartList.appendChild(div);
-            });
-
-            document.getElementById('totalAmount').innerText = total.toLocaleString() + ' đ';
-            document.getElementById('totalAmount').dataset.value = total; // Lưu giá trị số để tính toán
-            calculateChange();
-        }
-
-        // 4. LOGIC TÍNH TIỀN
-        function calculateChange() {
-            const total = parseInt(document.getElementById('totalAmount').dataset.value || 0);
-            const customerPay = parseInt(document.getElementById('customerPay').value || 0);
-            const changeElement = document.getElementById('changeAmount');
-
-            const change = customerPay - total;
-
-            if (customerPay === 0) {
-                changeElement.innerText = "0";
-                changeElement.style.color = "gray";
-            } else if (change < 0) {
-                changeElement.innerText = "Thiếu " + Math.abs(change).toLocaleString();
-                changeElement.style.color = "red";
-            } else {
-                changeElement.innerText = change.toLocaleString() + " đ";
-                changeElement.style.color = "#16a34a"; // Green
-            }
-        }
-
-        function setCash(amount) {
-            document.getElementById('customerPay').value = amount;
-            calculateChange();
-        }
-
-        function filterCategory(cat) {
-            renderProducts(cat);
-        }
-
-        // KHỞI CHẠY LẦN ĐẦU
-        renderProducts();
-    </script>
 </body>
 </html>
-

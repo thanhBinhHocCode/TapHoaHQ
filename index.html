@@ -14,6 +14,7 @@
     .menu, .bill {
       padding: 20px;
       width: 50%;
+      box-sizing: border-box;
     }
     .menu {
       background-color: #fff;
@@ -27,8 +28,20 @@
     }
     .item {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fdfdfd;
+    }
+    .item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      margin-right: 10px;
+      border-radius: 5px;
     }
     button {
       padding: 5px 10px;
@@ -36,6 +49,7 @@
       color: white;
       border: none;
       cursor: pointer;
+      border-radius: 4px;
     }
     button:hover {
       background-color: #0056b3;
@@ -43,12 +57,23 @@
     .bill-summary {
       margin-top: 20px;
     }
+    select {
+      margin-bottom: 15px;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
 
   <div class="menu">
     <h2>Danh mục sản phẩm</h2>
+    <select id="category-filter" onchange="filterByCategory()">
+      <option value="">Tất cả</option>
+      <option value="Nước giải khát">Nước giải khát</option>
+      <option value="Bánh kẹo">Bánh kẹo</option>
+      <option value="Gia vị">Gia vị</option>
+      <option value="Sữa">Sữa</option>
+    </select>
     <div id="product-list"></div>
   </div>
 
@@ -65,26 +90,53 @@
 
   <script>
     const products = [
-      { name: "Cafe Đen Đá", price: 25000 },
-      { name: "Cafe Sữa Đá", price: 29000 },
-      { name: "Bạc Xỉu", price: 35000 },
-      { name: "Trà Đào Cam Sả", price: 45000 },
-      { name: "Gà Rán (1 miếng)", price: 35000 },
-      { name: "Khoai Tây Chiên", price: 25000 },
-      { name: "Hamburger Bò", price: 55000 },
-      { name: "Mì Ý Sốt Bò", price: 45000 },
-      { name: "Nước Suối", price: 10000 }
+      {
+        name: "Nước Suối",
+        price: 10000,
+        category: "Nước giải khát",
+        image: "https://via.placeholder.com/60x60?text=Nước+Suối"
+      },
+      {
+        name: "Trà Đào Cam Sả",
+        price: 45000,
+        category: "Nước giải khát",
+        image: "https://via.placeholder.com/60x60?text=Trà+Đào"
+      },
+      {
+        name: "Bánh Oreo",
+        price: 15000,
+        category: "Bánh kẹo",
+        image: "https://via.placeholder.com/60x60?text=Oreo"
+      },
+      {
+        name: "Muối I-ốt",
+        price: 8000,
+        category: "Gia vị",
+        image: "https://via.placeholder.com/60x60?text=Muối"
+      },
+      {
+        name: "Sữa Tươi Vinamilk",
+        price: 12000,
+        category: "Sữa",
+        image: "https://via.placeholder.com/60x60?text=Sữa"
+      }
     ];
 
     const bill = [];
 
-    function renderProducts() {
+    function renderProducts(filtered = products) {
       const list = document.getElementById("product-list");
-      products.forEach((product, index) => {
+      list.innerHTML = "";
+      filtered.forEach((product, index) => {
         const div = document.createElement("div");
         div.className = "item";
         div.innerHTML = `
-          <span>${product.name} - ${product.price.toLocaleString()} ₫</span>
+          <img src="${product.image}" alt="${product.name}">
+          <div style="flex:1">
+            <strong>${product.name}</strong><br>
+            <small>${product.category}</small><br>
+            <span>${product.price.toLocaleString()} ₫</span>
+          </div>
           <button onclick="addToBill(${index})">Thêm</button>
         `;
         list.appendChild(div);
@@ -125,6 +177,12 @@
       bill.length = 0;
       document.getElementById("paid").value = 0;
       renderBill();
+    }
+
+    function filterByCategory() {
+      const selected = document.getElementById("category-filter").value;
+      const filtered = selected ? products.filter(p => p.category === selected) : products;
+      renderProducts(filtered);
     }
 
     document.getElementById("paid").addEventListener("input", renderBill);

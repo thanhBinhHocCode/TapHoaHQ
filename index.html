@@ -104,7 +104,7 @@
         ];
 
         let cart = [];
-        let currentTotal = 0; // Biến toàn cục lưu tổng tiền hiện tại
+        let currentTotal = 0;
 
         function renderProducts(filter = 'All') {
             const grid = document.getElementById('productGrid');
@@ -148,7 +148,7 @@
                 container.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm italic">Giỏ hàng trống</p>';
                 totalEl.innerText = '0đ';
                 currentTotal = 0;
-                calculateChange(); // Tính lại tiền thừa khi giỏ hàng trống
+                calculateChange(); 
                 return;
             }
             
@@ -170,12 +170,11 @@
                     </div>
                 `;
             });
-            currentTotal = total; // Cập nhật tổng tiền
+            currentTotal = total; 
             totalEl.innerText = total.toLocaleString() + 'đ';
-            calculateChange(); // Tính lại tiền thừa mỗi khi giỏ hàng thay đổi
+            calculateChange(); 
         }
 
-        // Hàm tính tiền thừa mới
         function calculateChange() {
             const cashInput = document.getElementById('cashReceived').value;
             const cash = parseInt(cashInput) || 0;
@@ -184,10 +183,10 @@
             if (currentTotal > 0 && cash >= currentTotal) {
                 const change = cash - currentTotal;
                 changeEl.innerText = change.toLocaleString() + 'đ';
-                changeEl.className = "text-lg font-black text-orange-600"; // Màu cam bình thường
+                changeEl.className = "text-lg font-black text-orange-600"; 
             } else if (currentTotal > 0 && cash > 0 && cash < currentTotal) {
                 changeEl.innerText = "Thiếu " + (currentTotal - cash).toLocaleString() + "đ";
-                changeEl.className = "text-lg font-black text-red-500"; // Màu đỏ cảnh báo
+                changeEl.className = "text-lg font-black text-red-500"; 
             } else {
                 changeEl.innerText = '0đ';
                 changeEl.className = "text-lg font-black text-orange-600";
@@ -198,11 +197,11 @@
 
         function setCash(amount) {
             document.getElementById('cashReceived').value = amount;
-            calculateChange(); // Gọi hàm tính tiền thừa ngay khi bấm nút
+            calculateChange(); 
         }
 
         function checkout() {
-            calculateChange(); // Đảm bảo tính toán chính xác trước khi kiểm tra
+            calculateChange(); 
             if(cart.length === 0) return alert("Vui lòng chọn sản phẩm!");
             
             const cash = parseInt(document.getElementById('cashReceived').value) || 0;
@@ -213,7 +212,6 @@
 
             const change = cash - currentTotal;
 
-            // Hiển thị lịch sử
             document.getElementById('historyPanel').classList.remove('hidden');
             const log = `<div class="border-b border-gray-700 py-1">Done: ${now} | ${customer} | Thu: ${currentTotal.toLocaleString()}đ | Thừa: ${change.toLocaleString()}đ</div>`;
             const history = document.getElementById('historyLog');
@@ -223,10 +221,8 @@
             cart = [];
             document.getElementById('cashReceived').value = '';
             document.getElementById('customerName').value = '';
-            renderCart(); // renderCart sẽ tự gọi calculateChange để reset tiền thừa về 0
-        }
+            renderCart(); 
 
-        // Lắng nghe ô tìm kiếm
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const val = e.target.value.toLowerCase();
             const grid = document.getElementById('productGrid');

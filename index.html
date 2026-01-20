@@ -3,103 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống POS Bán Hàng - Ảnh Lớn</title>
+    <title>Hệ thống POS - Ảnh Nhỏ & Tính Tiền Thừa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Tăng kích thước tối thiểu của mỗi ô sản phẩm để ảnh hiển thị lớn hơn */
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 1.5rem; 
+        /* GIẢM kích thước lưới để ô nhỏ lại */
+        .product-grid {
+            display: grid;
+            /* Chiều rộng tối thiểu giảm từ 220px xuống 130px */
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 0.75rem;
         }
         .cart-item-list { max-height: 450px; overflow-y: auto; }
-        
-        /* Đảm bảo ảnh luôn vuông và lấp đầy khung */
+
+        /* GIẢM chiều cao ảnh */
         .product-image {
             width: 100%;
-            height: 180px;
+            /* Chiều cao giảm từ 180px xuống 90px (một nửa) */
+            height: 90px;
             object-fit: cover;
             border-radius: 0.5rem 0.5rem 0 0;
         }
+        /* Điều chỉnh font chữ nhỏ lại cho phù hợp ô ảnh nhỏ */
+        .card-title { font-size: 0.9rem; line-height: 1.2rem; height: 2.4rem; overflow: hidden; }
+        .card-price { font-size: 1rem; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
-        <div class="w-7/12 p-6 flex flex-col border-r bg-white overflow-y-auto">
-            <div class="mb-6">
-                <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm nhanh..." class="w-full p-3 border-2 border-blue-100 rounded-xl shadow-sm focus:border-blue-500 outline-none transition-all">
+        <div class="w-7/12 p-4 flex flex-col border-r bg-white overflow-y-auto">
+            <div class="mb-4">
+                <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm..." class="w-full p-2 border-2 border-blue-100 rounded-lg shadow-sm focus:border-blue-500 outline-none transition-all">
             </div>
             
-            <div class="flex gap-3 mb-6 overflow-x-auto pb-2 items-center">
-                <span class="font-bold text-gray-500 whitespace-nowrap">Lọc theo:</span>
-                <button onclick="filterCategory('All')" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-md transition">Tất cả</button>
-                <button onclick="filterCategory('Bánh kẹo')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Bánh kẹo</button>
-                <button onclick="filterCategory('Gia vị')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Gia vị</button>
-                <button onclick="filterCategory('Nước giải khát')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Nước giải khát</button>
-                <button onclick="filterCategory('Mì tôm')" class="px-5 py-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm transition">Mì tôm</button>
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 items-center scrollbar-hide">
+                <button onclick="filterCategory('All')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition whitespace-nowrap">Tất cả</button>
+                <button onclick="filterCategory('Bánh kẹo')" class="px-3 py-1 bg-white border text-sm rounded-full hover:bg-gray-100 transition whitespace-nowrap">Bánh kẹo</button>
+                <button onclick="filterCategory('Gia vị')" class="px-3 py-1 bg-white border text-sm rounded-full hover:bg-gray-100 transition whitespace-nowrap">Gia vị</button>
+                <button onclick="filterCategory('Nước giải khát')" class="px-3 py-1 bg-white border text-sm rounded-full hover:bg-gray-100 transition whitespace-nowrap">Nước giải khát</button>
+                <button onclick="filterCategory('Mì tôm')" class="px-3 py-1 bg-white border text-sm rounded-full hover:bg-gray-100 transition whitespace-nowrap">Mì tôm</button>
             </div>
 
             <div id="productGrid" class="product-grid">
                 </div>
         </div>
 
-        <div class="w-5/12 p-6 bg-gray-50 flex flex-col justify-between shadow-2xl">
+        <div class="w-5/12 p-4 bg-gray-50 flex flex-col justify-between shadow-xl border-l">
             <div>
-                <h2 class="text-2xl font-black mb-6 text-gray-800 border-b-4 border-blue-500 pb-2">HÓA ĐƠN TẠM TÍNH</h2>
+                <h2 class="text-xl font-black mb-4 text-gray-800 border-b-2 border-blue-500 pb-2">HÓA ĐƠN</h2>
                 <div class="flex gap-2 mb-4">
-                    <div class="bg-blue-100 p-2 rounded-lg text-blue-600">👤</div>
-                    <input type="text" id="customerName" placeholder="Tên khách hàng (không bắt buộc)" class="w-full p-2 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                    <input type="text" id="customerName" placeholder="Tên khách hàng..." class="w-full p-2 text-sm bg-white border rounded focus:border-blue-500 outline-none">
                 </div>
                 
-                <div id="cartItems" class="cart-item-list space-y-3">
-                    <p class="text-center text-gray-400 mt-10 italic">Chưa có sản phẩm nào được chọn</p>
+                <div id="cartItems" class="cart-item-list space-y-2 pr-1">
+                    <p class="text-center text-gray-400 mt-10 text-sm italic">Giỏ hàng trống</p>
                 </div>
             </div>
 
-            <div class="border-t-2 border-dashed pt-6 mt-4">
-                <div class="flex justify-between text-2xl font-black text-blue-700">
-                    <span>TỔNG TIỀN:</span>
+            <div class="border-t pt-4 mt-2 bg-gray-50 sticky bottom-0">
+                <div class="flex justify-between text-xl font-black text-blue-800 px-2">
+                    <span>TỔNG:</span>
                     <span id="totalAmount">0đ</span>
                 </div>
                 
-                <div class="mt-6 p-4 bg-white rounded-xl shadow-inner">
-                    <p class="text-sm font-bold text-gray-500 mb-2 uppercase">Tiền khách đưa:</p>
-                    <div class="grid grid-cols-4 gap-2 mb-3">
-                        <button onclick="setCash(50000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">50k</button>
-                        <button onclick="setCash(100000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">100k</button>
-                        <button onclick="setCash(200000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">200k</button>
-                        <button onclick="setCash(500000)" class="bg-gray-100 hover:bg-blue-100 py-2 rounded font-bold transition">500k</button>
+                <div class="mt-4 p-3 bg-white rounded-xl shadow-sm border">
+                    <p class="text-xs font-bold text-gray-500 mb-2 uppercase">Khách đưa:</p>
+                    <div class="grid grid-cols-4 gap-1 mb-2">
+                        <button onclick="setCash(50000)" class="bg-gray-100 hover:bg-blue-100 py-1 rounded text-sm font-bold transition">50k</button>
+                        <button onclick="setCash(100000)" class="bg-gray-100 hover:bg-blue-100 py-1 rounded text-sm font-bold transition">100k</button>
+                        <button onclick="setCash(200000)" class="bg-gray-100 hover:bg-blue-100 py-1 rounded text-sm font-bold transition">200k</button>
+                        <button onclick="setCash(500000)" class="bg-gray-100 hover:bg-blue-100 py-1 rounded text-sm font-bold transition">500k</button>
                     </div>
-                    <input type="number" id="cashReceived" class="w-full p-3 border-2 border-gray-200 rounded-lg text-right text-2xl font-mono text-green-600 focus:border-green-500 outline-none" placeholder="0">
+                    <input type="number" id="cashReceived" oninput="calculateChange()" class="w-full p-2 border-2 border-gray-300 rounded-lg text-right text-xl font-bold text-green-700 focus:border-green-500 outline-none" placeholder="0">
+                    
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-dashed">
+                        <span class="font-bold text-gray-600">Tiền thừa:</span>
+                        <span id="changeDue" class="text-lg font-black text-orange-600">0đ</span>
+                    </div>
                 </div>
 
-                <button onclick="checkout()" class="w-full bg-blue-600 text-white py-4 rounded-2xl mt-6 font-black text-xl hover:bg-blue-700 transform active:scale-95 transition shadow-lg">
-                    XUẤT HÓA ĐƠN
+                <button onclick="checkout()" class="w-full bg-blue-600 text-white py-3 rounded-lg mt-4 font-bold text-lg hover:bg-blue-700 transition shadow-md">
+                    THANH TOÁN NGAY
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 w-7/12 p-4 bg-black bg-opacity-80 text-white hidden" id="historyPanel">
-         <div class="flex justify-between items-center mb-2">
-             <h3 class="font-bold uppercase text-yellow-400 text-sm">Giao dịch vừa thực hiện</h3>
-             <button onclick="document.getElementById('historyPanel').classList.add('hidden')" class="text-xs bg-gray-600 px-2 rounded">Đóng</button>
+    <div class="fixed bottom-0 left-0 w-7/12 p-2 bg-gray-800 text-white hidden z-50" id="historyPanel">
+         <div class="flex justify-between items-center mb-1">
+             <h3 class="font-bold text-xs text-yellow-400">Giao dịch gần nhất</h3>
+             <button onclick="document.getElementById('historyPanel').classList.add('hidden')" class="text-xs bg-gray-600 px-2 rounded hover:bg-gray-500">Đóng</button>
          </div>
-         <div id="historyLog" class="text-xs"></div>
+         <div id="historyLog" class="text-xs max-h-20 overflow-y-auto"></div>
     </div>
 
     <script>
-        // Cập nhật dữ liệu sản phẩm với link ảnh chất lượng hơn
+        // Dữ liệu mẫu
         const products = [
-            { id: 1, name: 'Bánh Quy Oreo Socola', price: 15000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=400&auto=format&fit=crop' },
-            { id: 2, name: 'Coca Cola Lon 330ml', price: 12000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400&auto=format&fit=crop' },
-            { id: 3, name: 'Mì Hảo Hảo Tôm Chua Cay', price: 5000, category: 'Mì tôm', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=400&auto=format&fit=crop' },
-            { id: 4, name: 'Nước mắm Nam Ngư 750ml', price: 42000, category: 'Gia vị', img: 'https://images.unsplash.com/photo-1589113103503-49654d88b75f?q=80&w=400&auto=format&fit=crop' },
-            { id: 5, name: 'Kẹo dẻo Haribo', price: 25000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1582050048266-3d70f0f5b12f?q=80&w=400&auto=format&fit=crop' },
-            { id: 6, name: 'Pepsi Không Calo', price: 11000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1543253687-c931c8e01820?q=80&w=400&auto=format&fit=crop' }
+            { id: 1, name: 'Bánh Quy Oreo Socola', price: 15000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=200&auto=format&fit=crop' },
+            { id: 2, name: 'Coca Cola Lon 330ml', price: 12000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=200&auto=format&fit=crop' },
+            { id: 3, name: 'Mì Hảo Hảo Tôm Chua Cay', price: 5000, category: 'Mì tôm', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=200&auto=format&fit=crop' },
+            { id: 4, name: 'Nước mắm Nam Ngư', price: 42000, category: 'Gia vị', img: 'https://images.unsplash.com/photo-1589113103503-49654d88b75f?q=80&w=200&auto=format&fit=crop' },
+            { id: 5, name: 'Kẹo dẻo Haribo Gấu', price: 25000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1582050048266-3d70f0f5b12f?q=80&w=200&auto=format&fit=crop' },
+            { id: 6, name: 'Pepsi Không Calo Lon', price: 11000, category: 'Nước giải khát', img: 'https://images.unsplash.com/photo-1543253687-c931c8e01820?q=80&w=200&auto=format&fit=crop' },
+            { id: 7, name: 'Snack Khoai Tây Lay\'s', price: 18000, category: 'Bánh kẹo', img: 'https://images.unsplash.com/photo-1566478919030-261443943938?q=80&w=200&auto=format&fit=crop' },
+             { id: 8, name: 'Tương Ớt Chinsu', price: 15000, category: 'Gia vị', img: 'https://images.unsplash.com/photo-1604634077373-a29a89938c6a?q=80&w=200&auto=format&fit=crop' }
         ];
 
         let cart = [];
+        let currentTotal = 0; // Biến toàn cục lưu tổng tiền hiện tại
 
         function renderProducts(filter = 'All') {
             const grid = document.getElementById('productGrid');
@@ -108,12 +119,11 @@
             
             filtered.forEach(p => {
                 grid.innerHTML += `
-                    <div onclick="addToCart(${p.id})" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl cursor-pointer transition-all border-2 border-transparent hover:border-blue-400 group">
-                        <img src="${p.img}" class="product-image group-hover:scale-105 transition-transform duration-300">
-                        <div class="p-4 text-center">
-                            <p class="font-bold text-gray-700 text-lg mb-1 line-clamp-1">${p.name}</p>
-                            <p class="text-blue-600 font-black text-xl">${p.price.toLocaleString()}đ</p>
-                            <p class="text-xs text-gray-400 mt-1 uppercase">${p.category}</p>
+                    <div onclick="addToCart(${p.id})" class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md cursor-pointer transition-all border hover:border-blue-400 group">
+                        <img src="${p.img}" class="product-image group-hover:opacity-90 transition-opacity">
+                        <div class="p-2 text-center">
+                            <p class="card-title font-semibold text-gray-700 mb-1">${p.name}</p>
+                            <p class="card-price text-blue-600 font-bold">${p.price.toLocaleString()}đ</p>
                         </div>
                     </div>
                 `;
@@ -139,9 +149,12 @@
         function renderCart() {
             const container = document.getElementById('cartItems');
             const totalEl = document.getElementById('totalAmount');
+            
             if(cart.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-400 mt-10 italic">Chưa có sản phẩm nào</p>';
+                container.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm italic">Giỏ hàng trống</p>';
                 totalEl.innerText = '0đ';
+                currentTotal = 0;
+                calculateChange(); // Tính lại tiền thừa khi giỏ hàng trống
                 return;
             }
             
@@ -150,52 +163,73 @@
             cart.forEach(item => {
                 total += item.price * item.qty;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm border-l-4 border-blue-500">
-                        <div class="flex-1">
-                            <p class="font-bold text-gray-800">${item.name}</p>
-                            <p class="text-sm text-blue-500">${item.price.toLocaleString()}đ x ${item.qty}</p>
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg shadow-sm border-l-2 border-blue-500 text-sm">
+                        <div class="flex-1 truncate mr-2">
+                            <p class="font-bold text-gray-800 truncate">${item.name}</p>
+                            <p class="text-xs text-blue-500">${item.price.toLocaleString()}đ x ${item.qty} = ${(item.price * item.qty).toLocaleString()}đ</p>
                         </div>
-                        <div class="flex items-center gap-3 bg-gray-100 p-1 rounded-lg">
-                            <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 flex items-center justify-center bg-white rounded shadow hover:bg-red-50 text-red-500 font-bold">-</button>
-                            <span class="w-6 text-center font-bold">${item.qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 flex items-center justify-center bg-white rounded shadow hover:bg-green-50 text-green-500 font-bold">+</button>
+                        <div class="flex items-center gap-1 bg-gray-100 p-1 rounded">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded shadow hover:bg-red-50 text-red-500 font-bold">-</button>
+                            <span class="w-5 text-center font-bold text-xs">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded shadow hover:bg-green-50 text-green-500 font-bold">+</button>
                         </div>
                     </div>
                 `;
             });
+            currentTotal = total; // Cập nhật tổng tiền
             totalEl.innerText = total.toLocaleString() + 'đ';
+            calculateChange(); // Tính lại tiền thừa mỗi khi giỏ hàng thay đổi
         }
 
-        function filterCategory(cat) {
-            renderProducts(cat);
+        // Hàm tính tiền thừa mới
+        function calculateChange() {
+            const cashInput = document.getElementById('cashReceived').value;
+            const cash = parseInt(cashInput) || 0;
+            const changeEl = document.getElementById('changeDue');
+
+            if (currentTotal > 0 && cash >= currentTotal) {
+                const change = cash - currentTotal;
+                changeEl.innerText = change.toLocaleString() + 'đ';
+                changeEl.className = "text-lg font-black text-orange-600"; // Màu cam bình thường
+            } else if (currentTotal > 0 && cash > 0 && cash < currentTotal) {
+                changeEl.innerText = "Thiếu " + (currentTotal - cash).toLocaleString() + "đ";
+                changeEl.className = "text-lg font-black text-red-500"; // Màu đỏ cảnh báo
+            } else {
+                changeEl.innerText = '0đ';
+                changeEl.className = "text-lg font-black text-orange-600";
+            }
         }
+
+        function filterCategory(cat) { renderProducts(cat); }
 
         function setCash(amount) {
             document.getElementById('cashReceived').value = amount;
+            calculateChange(); // Gọi hàm tính tiền thừa ngay khi bấm nút
         }
 
         function checkout() {
+            calculateChange(); // Đảm bảo tính toán chính xác trước khi kiểm tra
             if(cart.length === 0) return alert("Vui lòng chọn sản phẩm!");
-            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            
             const cash = parseInt(document.getElementById('cashReceived').value) || 0;
             const customer = document.getElementById('customerName').value || "Khách lẻ";
-            const now = new Date().toLocaleString('vi-VN');
+            const now = new Date().toLocaleString('vi-VN', {hour12: false});
 
-            if(cash < total) return alert("Tiền khách đưa còn thiếu " + (total - cash).toLocaleString() + "đ");
+            if(cash < currentTotal) return alert("Tiền khách đưa chưa đủ!");
+
+            const change = cash - currentTotal;
 
             // Hiển thị lịch sử
             document.getElementById('historyPanel').classList.remove('hidden');
-            const log = `● ${now} | ${customer} | Tổng: ${total.toLocaleString()}đ (Thối: ${(cash - total).toLocaleString()}đ)`;
+            const log = `<div class="border-b border-gray-700 py-1">Done: ${now} | ${customer} | Thu: ${currentTotal.toLocaleString()}đ | Thừa: ${change.toLocaleString()}đ</div>`;
             const history = document.getElementById('historyLog');
-            history.innerHTML = `<div>${log}</div>` + history.innerHTML;
+            history.innerHTML = log + history.innerHTML;
 
-            alert("THANH TOÁN THÀNH CÔNG!\n------------------------\nKhách: " + customer + "\nTổng: " + total.toLocaleString() + "đ\nTiền thối: " + (cash - total).toLocaleString() + "đ");
-            
             // Reset
             cart = [];
             document.getElementById('cashReceived').value = '';
             document.getElementById('customerName').value = '';
-            renderCart();
+            renderCart(); // renderCart sẽ tự gọi calculateChange để reset tiền thừa về 0
         }
 
         // Lắng nghe ô tìm kiếm
@@ -204,12 +238,12 @@
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             products.filter(p => p.name.toLowerCase().includes(val)).forEach(p => {
-                grid.innerHTML += `
-                    <div onclick="addToCart(${p.id})" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl cursor-pointer transition-all border-2 border-transparent hover:border-blue-400 group">
-                        <img src="${p.img}" class="product-image group-hover:scale-105 transition-transform duration-300">
-                        <div class="p-4 text-center">
-                            <p class="font-bold text-gray-700 text-lg mb-1 line-clamp-1">${p.name}</p>
-                            <p class="text-blue-600 font-black text-xl">${p.price.toLocaleString()}đ</p>
+                 grid.innerHTML += `
+                    <div onclick="addToCart(${p.id})" class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md cursor-pointer transition-all border hover:border-blue-400 group">
+                        <img src="${p.img}" class="product-image group-hover:opacity-90 transition-opacity">
+                        <div class="p-2 text-center">
+                            <p class="card-title font-semibold text-gray-700 mb-1">${p.name}</p>
+                            <p class="card-price text-blue-600 font-bold">${p.price.toLocaleString()}đ</p>
                         </div>
                     </div>
                 `;

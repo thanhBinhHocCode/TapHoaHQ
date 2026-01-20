@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống POS - Ảnh Nhỏ & Tính Tiền Thừa</title>
+    <title>Tạp Hóa Hường Quyền</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* GIẢM kích thước lưới để ô nhỏ lại */
         .product-grid {
             display: grid;
-            /* Chiều rộng tối thiểu giảm từ 220px xuống 130px */
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 0.75rem;
         }
         .cart-item-list { max-height: 450px; overflow-y: auto; }
-
-        /* GIẢM chiều cao ảnh */
         .product-image {
             width: 100%;
-            /* Chiều cao giảm từ 180px xuống 90px (một nửa) */
             height: 90px;
             object-fit: cover;
             border-radius: 0.5rem 0.5rem 0 0;
         }
-        /* Điều chỉnh font chữ nhỏ lại cho phù hợp ô ảnh nhỏ */
         .card-title { font-size: 0.9rem; line-height: 1.2rem; height: 2.4rem; overflow: hidden; }
         .card-price { font-size: 1rem; }
     </style>

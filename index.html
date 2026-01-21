@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tạp Hóa Hường Quyền</title>
     <script src="https://cdn.tailwindcss.com"></script>
-   <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <style>
       #splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff; /* Nền sáng */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease; /* Hiệu ứng mờ dần khi biến mất */
-}
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff; /* Nền sáng */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease; /* Hiệu ứng mờ dần khi biến mất */
+      }
 
-.splash-logo {
-    width: 80px; /* Kích thước nhỏ hơn như bạn muốn */
-    height: auto;
-}
+      .splash-logo {
+        width: 80px; /* Kích thước nhỏ hơn như bạn muốn */
+        height: auto;
+      }
       /* Khung chứa lưới sản phẩm */
       .product-grid {
         display: grid;
@@ -73,7 +76,7 @@
       .card-price {
         font-size: 0.9rem;
         font-weight: 800;
-        color: #d8841d;
+        color: #ef9504;
         text-align: center;
         margin-top: auto;
         padding-bottom: 8px;
@@ -86,27 +89,22 @@
   </head>
   <body class="bg-gray-100 font-sans overflow-hidden">
     <div id="splash-screen">
-    <img src="images/logoHQ.png" alt="Logo" class="splash-logo">
-</div>
+      <img src="images/logoHQ.png" alt="Logo" class="splash-logo" />
+    </div>
     <div class="flex h-screen">
       <div class="w-7/12 p-5 flex flex-col border-r bg-white">
         <div class="flex items-center gap-4 mb-4 pb-3 border-b border-gray-100">
           <div
-            class="w-14 h-14 bg-blue-700 rounded-full flex items-center justify-center text-2xl shadow-lg text-white font-bold border-2 border-blue-200"
+            class="w-14 h-14 bg-pink-700 rounded-full flex items-center justify-center text-2xl shadow-lg text-white font-bold border-2 border-blue-200"
           >
-   <img src="images/logoHQ.png" alt="Logo" class="splash-logo">
+            <img src="images/logoHQ.png" alt="Logo" class="splash-logo" />
           </div>
           <div>
             <h2
-              class="text-2xl font-black text-blue-800 uppercase tracking-tight"
+              class="text-2xl font-black text-red-800 uppercase tracking-tight"
             >
               Tạp Hóa Hường Quyền
             </h2>
-            <p
-              class="text-gray-500 text-xs font-bold uppercase tracking-widest"
-            >
-              Hệ thống bán hàng chuyên nghiệp
-            </p>
           </div>
         </div>
 
@@ -519,16 +517,16 @@
 
       // Chạy khởi tạo lần đầu
       renderProducts("All");
-      
-    window.addEventListener('load', function () {
+
+      window.addEventListener("load", function () {
         setTimeout(function () {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-            }, 500); // Đợi hiệu ứng chuyển cảnh xong rồi ẩn hẳn
-        }, 1000); // Hiển thị trong đúng 1 giây
-    });
+          const splash = document.getElementById("splash-screen");
+          splash.style.opacity = "0";
+          setTimeout(() => {
+            splash.style.display = "none";
+          }, 500); // Đợi hiệu ứng chuyển cảnh xong rồi ẩn hẳn
+        }, 500); // Hiển thị trong đúng 1 giây
+      });
     </script>
   </body>
 </html>

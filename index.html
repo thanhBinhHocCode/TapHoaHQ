@@ -162,6 +162,18 @@
           >
             Dầu gội-xả
           </button>
+          <button
+            onclick="filterCategory('Dầu ăn')"
+            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition whitespace-nowrap"
+          >
+            Dầu ăn
+          </button>
+          <button
+            onclick="filterCategory('Sữa')"
+            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition whitespace-nowrap"
+          >
+            Sữa
+          </button>
         </div>
 
         <div id="productGrid" class="product-grid"></div>
@@ -288,7 +300,7 @@
         {
           id: 2,
           name: "Bánh Nabati",
-          price: 25000,
+          price: 10000,
           category: "Bánh kẹo",
           img: "https://product.hstatic.net/200000452921/product/tai_xuong__17__0d90f4c397f04ba99e0df18349374820_master.jpg",
         },
@@ -322,8 +334,8 @@
         },
         {
           id: 7,
-          name: "Thuốc lá Thăng Long",
-          price: 15000,
+          name: "Thuốc lá Thăng Long Dẹp",
+          price: 14000,
           category: "Thuốc lá",
           img: "data:image/jpeg;base64,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",
         },
@@ -336,15 +348,15 @@
         },
         {
           id: 9,
-          name: "Dầu gội Clear gói",
-          price: 2000,
+          name: "Dầu gội Clear dây",
+          price: 15000,
           category: "Dầu gội-xả",
           img: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200",
         },
         {
           id: 10,
-          name: "Dầu xả Dove gói",
-          price: 2000,
+          name: "Dầu xả Dove dây",
+          price: 15000,
           category: "Dầu gội-xả",
           img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
         },
@@ -360,6 +372,139 @@
           name: "Dầu xả Dove chai lớn",
           price: 150000,
           category: "Dầu gội-xả",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 13,
+          name: "Dầu Đậu Nành Simply 1L",
+          price: 55000,
+          category: "Dầu ăn",
+          img: "",
+        },
+        {
+          id: 14,
+          name: "Thuốc lá Ngựa Đen",
+          price: 11000,
+          category: "Thuốc lá",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 15,
+          name: "Thuốc lá Ngựa Trắng",
+          price: 27000,
+          category: "Thuốc lá",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 16,
+          name: "Thuốc lá Sài Gòn Bạc",
+          price: 16000,
+          category: "Thuốc lá",
+          img: "https://cdn2-retail-images.kiotviet.vn/galbimart/c3ad0ef4b2e74175841cb3ca1c3ef838.png",
+        },
+        {
+          id: 17,
+          name: "Thuốc lá Sài Gòn Xanh Bấm",
+          price: 16000,
+          category: "Thuốc lá",
+          img: "https://cdn.sobanhang.com/v2/2000x2000/finan-prd/d37efe07-c712-4571-ac26-36da2a576542/image/13d69c56-67d9-4358-a5b0-ec0a2ff9d6e2.jpg",
+        },
+        {
+          id: 18,
+          name: "Thuốc lá Sài Gòn Xanh Slim",
+          price: 15000,
+          category: "Thuốc lá",
+          img: "https://cdn.sobanhang.com/v2/2000x2000/finan-prd/d37efe07-c712-4571-ac26-36da2a576542/image/7d4e888e-1708-4d08-8149-81d17e6d160f.jpg",
+        },
+        {
+          id: 19,
+          name: "Thuốc lá Thăng Long To",
+          price: 14000,
+          category: "Thuốc lá",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 20,
+          name: "Sữa MILO nhỏ (lốc)",
+          price: 20000,
+          category: "Sữa",
+          img: "https://concung.com/2024/05/66444-110575-large_mobile/thuc-pham-bo-sung-sua-lua-mach-nestle-milo-110ml-loc-4-hop.webp",
+        },
+        {
+          id: 21,
+          name: "Sữa MILO To (lốc)",
+          price: 30000,
+          category: "Sữa",
+          img: "https://product.hstatic.net/200000078749/product/thuc_uong_dinh_duong_milo_loc_4x180ml_08fe827a14c24b1cb0b0b54b2604aab6_6f544d7c0d3a43a3be57a148c76216c7.jpg",
+        },
+        {
+          id: 22,
+          name: "Dầu Tôm",
+          price: 45000,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 23,
+          name: "Dầu Cái Lân 1L",
+          price: 40000,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 24,
+          name: "Dầu Meizan 1L",
+          price: 43000,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 25,
+          name: "Dầu Neptune 1L",
+          price: 333,
+          category: "Dầu ăn",
+          img: "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/2286/226995/bhx/226995-slide_202409121350273101.jpg",
+        },
+        {
+          id: 26,
+          name: "Dầu Orchid 1L",
+          price: 222,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 27,
+          name: "Dầu Orchid 5L",
+          price: 22222,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 28,
+          name: "Dầu Tiara Đậu nành 1L",
+          price: 50000,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 29,
+          name: "Dầu Idelia 1L",
+          price: 50000,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 30,
+          name: "Dầu Meizan 2L",
+          price: 222,
+          category: "Dầu ăn",
+          img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
+        },
+        {
+          id: 31,
+          name: "Dầu Idelia 33",
+          price: 22,
+          category: "Dầu ăn",
           img: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200",
         },
       ];
